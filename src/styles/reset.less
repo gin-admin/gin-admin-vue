@@ -1,0 +1,50 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: auto;
+    min-height: 100%;
+    word-break: break-word;
+    hyphens: auto;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior: none;
+}
+
+#app {
+    position: relative;
+}
+
+body {
+    font: normal normal normal 14px/1.5 @font-family;
+    color: @color-text;
+}
+
+img,
+video,
+audio {
+    max-width: 100%;
+    vertical-align: middle;
+}
+
+iframe {
+    vertical-align: middle;
+}
+
+input:-internal-autofill-previewed,
+input:-internal-autofill-selected {
+    transition: background-color 5000s ease-in-out 0s !important;
+}
+
+textarea {
+    resize: none;
+}
+
+ul,
+ol,
+li {
+    list-style: none;
+}
