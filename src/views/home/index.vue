@@ -1,115 +1,112 @@
 <template>
-    <a-card class="mb-8-2">
-        <h2>{{ userInfo?.name }} ，祝你开心每一天！</h2>
-        <p class="mb-0">某某某公司－某某某部门－某某某岗位</p>
-    </a-card>
-
     <a-row :gutter="16">
-        <a-col :lg="18">
+        <a-col :lg="24">
             <a-card>
                 <a-row
                     class="align-center"
                     type="flex">
-                    <a-col flex="1">
-                        <a-statistic
-                            title="我的待办"
-                            value="8个任务" />
-                    </a-col>
-                    <a-col flex="1">
-                        <a-statistic
-                            title="本周任务平均处理时间"
-                            value="32分钟" />
-                    </a-col>
-                    <a-col flex="1">
-                        <a-statistic
-                            title="本周完成任务数"
-                            value="24个任务" />
-                    </a-col>
-                    <a-col flex="1">
-                        <a-statistic
-                            title="异常（个）"
-                            value="1" />
-                    </a-col>
+                    <p
+                        class="display-flex align-items-center"
+                        style="background-color: #f6ffec; padding: 10px; box-sizing: border-box; width: 100%">
+                        <check-circle-filled class="mr-4-1 color-success" />
+                        更加简洁、高效、模块化的 Golang Admin 服务，已经发布。
+                    </p>
                 </a-row>
             </a-card>
 
             <a-card
                 class="mt-8-2"
-                title="动态">
-                <a-list
-                    item-layout="horizontal"
-                    :loading="loading"
-                    :data-source="listData">
-                    <template #renderItem="{ item }">
-                        <a-list-item>
-                            <a-list-item-meta :description="item.datetime">
-                                <template #avatar>
-                                    <a-avatar :src="item.avatar" />
-                                </template>
-                                <template #title>
-                                    {{ item.title }}
-                                </template>
-                            </a-list-item-meta>
-                        </a-list-item>
-                    </template>
-                </a-list>
+                title="欢迎使用">
+                <p>
+                    gin-admin-cli new -d ~/go/src --name testapp --desc 'A test API service based on golang.' --pkg
+                    'github.com/xxx/testapp
+                    <copy-outlined
+                        style="color: #10a6fa"
+                        class="copy-btn"
+                        data-clipboard-text=" gin-admin-cli new -d ~/go/src --name testapp --desc 'A test API service based on golang.' --pkg
+                    'github.com/xxx/testapp"
+                        @click="handleCopy" />
+                </p>
             </a-card>
-        </a-col>
-        <a-col :lg="6">
-            <a-card title="关于">
-                <div>高性能 / 精致 / 优雅。基于 vue3 + ant-design-vue 的中后台前端解决方案。</div>
+
+            <a-card
+                class="mt-8-2"
+                title="快速开始">
+                <p>
+                    1, gin-admin-cli new -d ~/go/src --name testapp --desc 'A test API service based on golang.' --pkg
+                    'github.com/xxx/testapp'
+
+                    <copy-outlined
+                        style="color: #10a6fa"
+                        class="copy-btn"
+                        data-clipboard-text="gin-admin-cli new -d ~/go/src --name testapp --desc 'A test API service based on golang.' --pkg 'github.com/xxx/testapp'"
+                        @click="handleCopy" />
+                </p>
+
+                <p>
+                    2, cd ~/go/src/testapp
+                    <copy-outlined
+                        style="color: #10a6fa"
+                        class="copy-btn"
+                        data-clipboard-text="cd ~/go/src/testapp"
+                        @click="handleCopy" />
+                </p>
+                <p>
+                    3, make start
+                    <copy-outlined
+                        style="color: #10a6fa"
+                        class="copy-btn"
+                        data-clipboard-text="make start"
+                        @click="handleCopy" />
+                </p>
+                <p>Open your browser and visit http://localhost:8040/swagger/index.html</p>
+            </a-card>
+
+            <a-card
+                class="mt-8-2"
+                title="生成结构体">
+                <p>
+                    gin-admin-cli gen -d . -m CMS -s Category --structs-comment 'Category management'
+
+                    <copy-outlined
+                        style="color: #10a6fa"
+                        class="copy-btn"
+                        data-clipboard-text="gin-admin-cli gen -d . -m CMS -s Category --structs-comment 'Category management'"
+                        @click="handleCopy" />
+                </p>
             </a-card>
             <a-card
                 class="mt-8-2"
-                title="版本信息">
-                <a-result
-                    :sub-title="`最新版本 ${version}`"
-                    :title="`${title} ${version}`">
-                    <template #icon>
-                        <img
-                            :src="assets('upgrade.svg')"
-                            alt="" />
-                    </template>
-                </a-result>
+                title="删除结构体">
+                <p>
+                    gin-admin-cli rm -d . -m CMS -s Category
+                    <copy-outlined
+                        style="color: #10a6fa"
+                        class="copy-btn"
+                        data-clipboard-text="gin-admin-cli rm -d . -m CMS -s Category"
+                        @click="handleCopy" />
+                </p>
             </a-card>
         </a-col>
     </a-row>
 </template>
 
 <script setup>
-import { config } from '@/config'
-import { useUserStore } from '@/store'
-import { assets } from '@/utils/util'
-import { storeToRefs } from 'pinia'
-import apis from '@/apis'
-import usePagination from '@/hooks/usePagination'
-
+import ClipboardJS from 'clipboard'
+import { CheckCircleFilled, CopyOutlined } from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
 defineOptions({
     name: 'home',
 })
-
-const userStore = useUserStore()
-const { loading, listData, showLoading, hideLoading } = usePagination()
-const title = config('app.title')
-const { version } = __APP_INFO__
-
-const { userInfo } = storeToRefs(userStore)
-
-getDynamicList()
-
-async function getDynamicList() {
-    try {
-        showLoading()
-        const { code, data } = await apis.common.getDynamicList().catch(() => {
-            throw new Error()
-        })
-        hideLoading()
-        if (config('http.code.success') === code) {
-            listData.value = data
-        }
-    } catch (error) {
-        hideLoading()
-    }
+const handleCopy = () => {
+    const clipboard = new ClipboardJS('.copy-btn')
+    clipboard.on('success', (e) => {
+        e.clearSelection()
+        message.success('复制成功!')
+    })
+    clipboard.on('error', () => {
+        message.error('复制失败!')
+    })
 }
 </script>
 
