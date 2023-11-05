@@ -110,4 +110,9 @@ const handleCopy = () => {
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+p {
+    box-shadow: 0 0 3px 3px #f9f9f9;
+    padding: 20px;
+}
+</style>
