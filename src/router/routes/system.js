@@ -2,18 +2,6 @@ import { SettingOutlined, SmileOutlined } from '@ant-design/icons-vue'
 
 export default [
     {
-        path: 'logger',
-        name: 'logger',
-        component: '/logger/index.vue',
-        meta: {
-            icon: SmileOutlined,
-            title: '日志管理',
-            isMenu: true,
-            keepAlive: true,
-            permission: '*',
-        },
-    },
-    {
         path: 'system',
         name: 'system',
         component: 'RouteViewLayout',
@@ -48,33 +36,12 @@ export default [
                 },
             },
             {
-                path: 'menu',
-                name: 'menu',
-                component: '/system/menu/index.vue',
+                path: 'logger',
+                name: 'logger',
+                component: '/system/logger/index.vue',
                 meta: {
-                    title: '菜单管理',
-                    isMenu: true,
-                    keepAlive: true,
-                    permission: '*',
-                },
-            },
-            {
-                path: 'new-menu',
-                name: 'systemNewMenu',
-                component: '/system/new-menu/index.vue',
-                meta: {
-                    title: '新版菜单管理',
-                    isMenu: true,
-                    keepAlive: true,
-                    permission: '*',
-                },
-            },
-            {
-                path: 'dict',
-                name: 'systemDict',
-                component: '/system/dict/index.vue',
-                meta: {
-                    title: '字典管理',
+                    icon: SmileOutlined,
+                    title: '日志管理',
                     isMenu: true,
                     keepAlive: true,
                     permission: '*',

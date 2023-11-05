@@ -128,7 +128,7 @@ import { config } from '@/config'
 import { usePagination } from '@/hooks'
 import { formatUtcDateTime } from '@/utils/util'
 defineOptions({
-    name: 'logger',
+    name: 'Logger',
 })
 const colors = ref({
     info: 'success',
