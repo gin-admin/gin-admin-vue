@@ -11,7 +11,7 @@ export function formatApiData(data, parent = {}) {
     const newData = []
     let objItem = {}
     data.forEach((item) => {
-        if (item.type === 'button') {
+        if (item.type === 'button' && !(Object.keys(parent).length === 0)) {
             parent.actions.push(item.code)
             parent.meta.permission = [
                 {
@@ -87,6 +87,7 @@ export function formatRoutes(routes = [], parent = {}) {
                     ...meta,
                 },
             }
+
             // 面包屑导航
             route.meta.breadcrumb = [...(parent?.meta?.breadcrumb ?? []), route]
             // 重定向
