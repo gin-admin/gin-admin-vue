@@ -6,10 +6,8 @@ import useRouterStore from './modules/router'
 import useUserStore from './modules/user'
 
 const store = createPinia()
-
 const setupStore = (app) => {
     app.use(store)
-
     return app
 }
 

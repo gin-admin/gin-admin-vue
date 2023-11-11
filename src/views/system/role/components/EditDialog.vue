@@ -17,7 +17,7 @@
                 <a-row :gutter="12">
                     <a-col :span="12">
                         <a-form-item
-                            label="名称"
+                            :label="$t('pages.system.role.form.name')"
                             name="name">
                             <a-input v-model:value="formData.name"></a-input>
                         </a-form-item>
@@ -25,7 +25,7 @@
 
                     <a-col :span="12">
                         <a-form-item
-                            label="编码"
+                            :label="$t('pages.system.role.form.code')"
                             name="code">
                             <a-input v-model:value="formData.code"></a-input>
                         </a-form-item>
@@ -35,7 +35,7 @@
                 <a-row :gutter="24">
                     <a-col :span="24">
                         <a-form-item
-                            label="描述"
+                            :label="$t('pages.system.role.form.description')"
                             name="description">
                             <a-textarea v-model:value="formData.description"></a-textarea>
                         </a-form-item>
@@ -46,7 +46,7 @@
                     <a-col :span="12">
                         <a-form-item
                             style="width: 200px"
-                            label="排序值"
+                            :label="$t('pages.system.role.form.sequence')"
                             name="sequence">
                             <a-input
                                 :defaultValue="0"
@@ -56,13 +56,13 @@
                     </a-col>
                     <a-col :span="12">
                         <a-form-item
-                            label="状态"
+                            :label="$t('pages.system.role.form.status')"
                             name="status">
                             <a-radio-group
                                 v-model:value="formData.status"
                                 :options="[
-                                    { label: '启用', value: 'enabled' },
-                                    { label: '禁用', value: 'disabled' },
+                                    { label: $t('pages.system.role.form.enabled'), value: 'enabled' },
+                                    { label: $t('pages.system.role.form.disabled'), value: 'disabled' },
                                 ]"></a-radio-group>
                         </a-form-item>
                     </a-col>
@@ -90,15 +90,16 @@ import { useForm, useModal } from '@/hooks'
 import { toMenuTree } from '@/utils/util'
 
 const emit = defineEmits(['ok'])
-
+import { useI18n } from 'vue-i18n'
 const { modal, showModal, hideModal, showLoading, hideLoading } = useModal()
 const { formRecord, formData, formRef, formRules, resetForm } = useForm()
-const cancelText = ref('取消')
+const { t } = useI18n() // 解构出t方法
+const cancelText = ref(t('button.cancel'))
 
 formRules.value = {
-    name: { required: true, message: '请输入名称' },
-    code: { required: true, message: '请输入编码' },
-    status: { required: true, message: '请选择状态' },
+    name: { required: true, message: t('pages.system.role.form.name.placeholder') },
+    code: { required: true, message: t('pages.system.role.form.code.placeholder') },
+    status: { required: true, message: t('pages.system.role.form.status.placeholder') },
 }
 
 /**
@@ -130,7 +131,7 @@ watch(checkedKeys, () => {
 function handleCreate() {
     showModal({
         type: 'create',
-        title: '新建角色',
+        title: t('pages.system.role.add'),
     })
 }
 
@@ -140,12 +141,12 @@ function handleCreate() {
 async function handleEdit(record = {}) {
     showModal({
         type: 'edit',
-        title: '编辑角色',
+        title: t('pages.system.role.edit'),
     })
 
     const { data, success } = await apis.role.getRole(record.id).catch()
     if (!success) {
-        message.error('当前数据不存在')
+        message.error(t('component.message.error.save'))
         hideModal()
         return
     }
@@ -181,8 +182,6 @@ function handleOk() {
                     menus,
                 }
                 let result = null
-                // params.sequence ? params.sequence : (params.sequenc = 0)
-                console.log(params, '提交数据')
                 switch (modal.value.type) {
                     case 'create':
                         result = await apis.role.createRole(params).catch(() => {
@@ -201,7 +200,6 @@ function handleOk() {
                     emit('ok')
                 }
             } catch (error) {
-                console.log(error, '异常数据')
                 hideLoading()
             }
         })

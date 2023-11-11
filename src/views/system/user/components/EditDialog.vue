@@ -17,38 +17,42 @@
                 <a-row :gutter="12">
                     <a-col :span="12">
                         <a-form-item
-                            label="用户名"
+                            :label="$t('pages.system.user.form.username')"
                             name="username">
-                            <a-input v-model:value="formData.username"></a-input>
+                            <a-input
+                                :placeholder="$t('pages.system.user.form.username.placeholder')"
+                                v-model:value="formData.username"></a-input>
                         </a-form-item>
                     </a-col>
                     <a-col :span="12">
                         <a-form-item
-                            label="密码"
+                            :label="$t('pages.system.user.form.password')"
                             name="password">
                             <a-input-password
                                 v-model:value="formData.password"
-                                placeholder="请输入密码" />
+                                :placeholder="$t('pages.system.user.form.password.placeholder')" />
                         </a-form-item>
                     </a-col>
                 </a-row>
                 <a-row :gutter="12">
                     <a-col :span="12">
                         <a-form-item
-                            label="名称"
+                            :label="$t('pages.system.user.form.name')"
                             name="name">
-                            <a-input v-model:value="formData.name"></a-input>
+                            <a-input
+                                :placeholder="$t('pages.system.user.form.name.placeholder')"
+                                v-model:value="formData.name"></a-input>
                         </a-form-item>
                     </a-col>
                     <a-col :span="12">
                         <a-form-item
-                            label="所属角色"
+                            :label="$t('pages.system.user.form.roles')"
                             name="roles">
                             <a-select
                                 v-model:value="formData.roles"
                                 mode="multiple"
                                 style="width: 100%"
-                                placeholder="Please select"
+                                :placeholder="$t('pages.system.user.form.roles.placeholder')"
                                 :options="roles"
                                 @change="handleChange"></a-select>
                         </a-form-item>
@@ -58,20 +62,22 @@
                 <a-row :gutter="12">
                     <a-col :span="12">
                         <a-form-item
-                            label="手机号"
+                            :label="$t('pages.system.user.form.phone')"
                             type="tel"
                             name="phone">
                             <a-input
+                                :placeholder="$t('pages.system.user.form.phone.placeholder')"
                                 type="tel"
                                 v-model:value="formData.phone"></a-input>
                         </a-form-item>
                     </a-col>
                     <a-col :span="12">
                         <a-form-item
-                            label="邮箱"
+                            :label="$t('pages.system.user.form.email')"
                             type="email"
                             name="email">
                             <a-input
+                                :placeholder="$t('pages.system.user.form.email.placeholder')"
                                 type="email"
                                 v-model:value="formData.email"></a-input>
                         </a-form-item>
@@ -81,22 +87,24 @@
                 <a-row :gutter="12">
                     <a-col :span="24">
                         <a-form-item
-                            label="备注"
+                            :label="$t('pages.system.user.form.remark')"
                             name="remark">
-                            <a-textarea v-model:value="formData.remark"></a-textarea>
+                            <a-textarea
+                                :placeholder="$t('pages.system.user.form.remark.placeholder')"
+                                v-model:value="formData.remark"></a-textarea>
                         </a-form-item>
                     </a-col>
                 </a-row>
                 <a-row :gutter="12">
                     <a-col :span="24">
                         <a-form-item
-                            label="状态"
+                            :label="$t('pages.system.user.form.status')"
                             name="status">
                             <a-radio-group
                                 v-model:value="formData.status"
                                 :options="[
-                                    { label: '启用', value: 'activated' },
-                                    { label: '禁用', value: 'freezed' },
+                                    { label: t('pages.system.user.form.status.activated'), value: 'activated' },
+                                    { label: t('pages.system.user.form.status.freezed'), value: 'freezed' },
                                 ]"></a-radio-group>
                         </a-form-item>
                     </a-col>
@@ -113,20 +121,20 @@ import { config } from '@/config'
 import apis from '@/apis'
 import { useForm, useModal } from '@/hooks'
 import { message } from 'ant-design-vue'
-
+import { useI18n } from 'vue-i18n'
 const emit = defineEmits(['ok'])
-
+const { t } = useI18n() // 解构出t方法
 const { modal, showModal, hideModal, showLoading, hideLoading } = useModal()
 const { formRecord, formData, formRef, formRules, resetForm } = useForm()
-const cancelText = ref('取消')
+const cancelText = ref(t('button.cancel'))
 const rolesValue = ref([])
 const roles = ref([])
 
 formRules.value = {
-    name: { required: true, message: '请输入名称' },
-    username: { required: true, message: '请输入编码' },
-    status: { required: true, message: '请选择状态' },
-    roles: [{ required: true, message: '请选择所属角色', trigger: 'change' }],
+    name: { required: true, message: t('pages.system.user.form.username.placeholder') },
+    username: { required: true, message: t('pages.system.user.form.code.placeholder') },
+    status: { required: true, message: t('pages.system.user.form.status') },
+    roles: [{ required: true, message: t('pages.system.user.form.roles.placeholder'), trigger: 'change' }],
 }
 
 /**
@@ -139,7 +147,6 @@ getRole()
  */
 const handleChange = (value) => {
     rolesValue.value = value
-    console.log(`selected ${rolesValue.value}`)
 }
 
 /**
@@ -148,7 +155,7 @@ const handleChange = (value) => {
 function handleCreate() {
     showModal({
         type: 'create',
-        title: '新建用户',
+        title: t('pages.system.user.add'),
     })
 }
 async function getRole() {
@@ -175,11 +182,10 @@ async function getRole() {
 async function handleEdit(record = {}) {
     showModal({
         type: 'edit',
-        title: '编辑用户',
+        title: t('pages.system.user.edit'),
     })
     const { data, success } = await apis.users.getUsers(record.id).catch()
     if (!success) {
-        message.error('当前数据不存在')
         hideModal()
         return
     }

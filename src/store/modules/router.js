@@ -2,30 +2,11 @@ import { defineStore } from 'pinia'
 
 import router from '@/router'
 import { notFoundRoute } from '@/router/config'
-import { filterRoutes, formatRoutes, generateMenuList, generateRoutes, getFirstValidRoute } from '@/router/util'
+import { formatRoutes, generateMenuList, generateRoutes, getFirstValidRoute } from '@/router/util'
 import { findTree } from '@/utils/util'
 import { config } from '@/config'
 import apis from '@/apis'
 import { formatApiData } from '../../router/util'
-
-function getUserPermission(data) {
-    const result = []
-
-    data.forEach((item) => {
-        if (item.type === 'page') {
-            result.push({
-                permission: item.code,
-                actions: item?.actions || '*',
-            })
-            if (item.children && item.children.length) {
-                const temp = getUserPermission(item.children)
-                result.push(...(temp || []))
-            }
-        }
-    })
-
-    return result
-}
 
 const useRouterStore = defineStore('router', {
     state: () => ({
@@ -40,25 +21,31 @@ const useRouterStore = defineStore('router', {
          * @returns {Promise}
          */
         getRouterList() {
-            return new Promise((resolve) => {
+            return new Promise((resolve, reject) => {
                 ;(async () => {
-                    const { data } = await apis.user.getUserMenu()
-                    const list = formatApiData(data)
-                    const tt = formatRoutes(list)
-                    const userPermission = getUserPermission(list)
-                    const validRoutes = config('app.permission') ? filterRoutes(tt, userPermission) : formatRoutes(tt)
-                    const menuList = generateMenuList(validRoutes)
+                    try {
+                        const { success, data } = await apis.user.getUserMenu().catch(() => {
+                            throw new Error()
+                        })
+                        if (config('http.code.success') === success) {
+                            const list = formatApiData(data)
+                            const validRoutes = formatRoutes(list)
 
-                    const routes = [...generateRoutes(validRoutes), notFoundRoute]
-                    const indexRoute = getFirstValidRoute(menuList)
-
-                    routes.forEach((route) => {
-                        router.addRoute(route)
-                    })
-                    this.routes = routes
-                    this.menuList = menuList
-                    this.indexRoute = indexRoute
-                    resolve()
+                            const menuList = generateMenuList(validRoutes)
+                            const routes = [...generateRoutes(validRoutes), notFoundRoute]
+                            const indexRoute = getFirstValidRoute(menuList)
+                            routes.forEach((route) => {
+                                router.addRoute(route)
+                            })
+                            this.routes = routes
+                            this.menuList = menuList
+                            this.indexRoute = indexRoute
+                            resolve()
+                        }
+                    } catch (error) {
+                        console.log(error)
+                        reject()
+                    }
                 })()
             })
         },

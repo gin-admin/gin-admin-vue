@@ -8,10 +8,10 @@
                 <a-row :gutter="gutter">
                     <a-col v-bind="colSpan">
                         <a-form-item
-                            label="名称"
+                            :label="$t('pages.system.role.form.name')"
                             name="name">
                             <a-input
-                                placeholder="请输入"
+                                :placeholder="$t('pages.system.role.form.code.placeholder')"
                                 v-model:value="searchFormData.name"></a-input>
                         </a-form-item>
                     </a-col>
@@ -19,13 +19,13 @@
                     <a-col v-bind="colSpan">
                         <a-form-item name="code">
                             <template #label>
-                                编码
-                                <a-tooltip title="编码 key">
+                                {{ $t('pages.system.role.form.code') }}
+                                <a-tooltip :title="$t('pages.system.role.form.code')">
                                     <question-circle-outlined class="ml-4-1 color-placeholder" />
                                 </a-tooltip>
                             </template>
                             <a-input
-                                placeholder="请输入"
+                                :placeholder="$t('pages.system.role.form.code.placeholder')"
                                 v-model:value="searchFormData.code"></a-input>
                         </a-form-item>
                     </a-col>
@@ -34,12 +34,12 @@
                         class="align-right"
                         v-bind="colSpan">
                         <a-space>
-                            <a-button @click="handleResetSearch">重置</a-button>
+                            <a-button @click="handleResetSearch">{{ $t('button.reset') }}</a-button>
                             <a-button
                                 ghost
                                 type="primary"
                                 @click="handleSearch">
-                                搜索
+                                {{ $t('button.search') }}
                             </a-button>
                         </a-space>
                     </a-col>
@@ -60,7 +60,7 @@
                         <template #icon>
                             <plus-outlined></plus-outlined>
                         </template>
-                        添加
+                        {{ $t('pages.system.role.add') }}
                     </a-button>
                 </x-action-bar>
                 <a-table
@@ -93,13 +93,13 @@
                         <template v-if="'action' === column.key">
                             <x-action-button @click="$refs.editDialogRef.handleEdit(record)">
                                 <a-tooltip>
-                                    <template #title>编辑</template>
+                                    <template #title> {{ $t('pages.system.role.edit') }}</template>
                                     <edit-outlined />
                                 </a-tooltip>
                             </x-action-button>
                             <x-action-button @click="handleRemove(record)">
                                 <a-tooltip>
-                                    <template #title>删除</template>
+                                    <template #title> {{ $t('pages.system.delete') }}</template>
                                     <delete-outlined style="color: #ff4d4f" />
                                 </a-tooltip>
                             </x-action-button>
@@ -125,18 +125,19 @@ import { statusTypeEnum } from '@/enums/system'
 import { usePagination, useForm } from '@/hooks'
 import EditDialog from './components/EditDialog.vue'
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons-vue'
+import { useI18n } from 'vue-i18n'
 
 defineOptions({
     name: 'systemRole',
 })
-
+const { t } = useI18n() // 解构出t方法
 const columns = [
-    { title: '编码', dataIndex: 'code', width: 240 },
-    { title: '名称', dataIndex: 'name' },
-    { title: '状态', dataIndex: 'status', key: 'statusType', width: 80 },
-    { title: '排序', dataIndex: 'sequence', width: 80 },
-    { title: '添加日期', key: 'createAt', fixed: 'right', width: 120 },
-    { title: '操作', key: 'action', fixed: 'right', width: 120 },
+    { title: t('pages.system.role.form.code'), dataIndex: 'code', width: 240 },
+    { title: t('pages.system.role.form.name'), dataIndex: 'name' },
+    { title: t('pages.system.role.form.status'), dataIndex: 'status', key: 'statusType', width: 80 },
+    { title: t('pages.system.role.form.sequence'), dataIndex: 'sequence', width: 80 },
+    { title: t('pages.system.role.form.created_at'), key: 'createAt', fixed: 'right', width: 120 },
+    { title: t('button.action'), key: 'action', fixed: 'right', width: 120 },
 ]
 
 const { listData, loading, showLoading, hideLoading, paginationState, searchFormData, resetPagination } =
@@ -178,9 +179,9 @@ async function getPageList() {
  */
 function handleRemove({ id }) {
     Modal.confirm({
-        title: '移除提示',
-        content: '确认移除？',
-        okText: '确认',
+        title: t('pages.system.role.delTip'),
+        content: t('button.confirm'),
+        okText: t('button.confirm'),
         onOk: () => {
             return new Promise((resolve, reject) => {
                 ;(async () => {
@@ -190,7 +191,7 @@ function handleRemove({ id }) {
                         })
                         if (config('http.code.success') === success) {
                             resolve()
-                            message.success('移除成功')
+                            message.success(t('component.message.success.delete'))
                             await getPageList()
                         }
                     } catch (error) {

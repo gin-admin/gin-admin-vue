@@ -10,31 +10,39 @@
                 layout="vertical">
                 <a-form-item
                     name="name"
-                    label="昵称">
-                    <a-input v-model:value="formData.name"></a-input>
+                    :label="$t('app.settings.basic.nickname')">
+                    <a-input
+                        :placeholder="$t('app.settings.basic.nickname-message')"
+                        v-model:value="formData.name"></a-input>
                 </a-form-item>
                 <a-form-item
-                    label="邮箱"
+                    :label="$t('app.settings.basic.email')"
                     name="email">
-                    <a-input v-model:value="formData.email"></a-input>
+                    <a-input
+                        :placeholder="$t('app.settings.basic.email-message')"
+                        v-model:value="formData.email"></a-input>
                 </a-form-item>
                 <a-form-item
                     name="phone"
-                    label="联系电话">
-                    <a-input v-model:value="formData.phone"></a-input>
+                    :label="$t('app.settings.basic.phone')">
+                    <a-input
+                        :placeholder="$t('app.settings.basic.phone-message')"
+                        v-model:value="formData.phone"></a-input>
                 </a-form-item>
 
                 <a-form-item
-                    label="个人简介"
+                    :label="$t('app.settings.basic.profile')"
                     name="remark">
-                    <a-textarea v-model:value="formData.remark"></a-textarea>
+                    <a-textarea
+                        :placeholder="$t('app.settings.basic.profile-message')"
+                        v-model:value="formData.remark"></a-textarea>
                 </a-form-item>
 
                 <a-form-item>
                     <a-button
                         @click="handleOk"
                         type="primary"
-                        >更新资料
+                        >{{ $t('app.settings.basic.update') }}
                     </a-button>
                 </a-form-item>
             </a-form>
@@ -69,7 +77,8 @@ import { config } from '@/config'
 import { useForm } from '@/hooks'
 import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
-
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 const router = useRouter()
 const { formRef, formData, formRules } = useForm()
 
@@ -98,7 +107,7 @@ function handleOk() {
             console.log(err)
         })
         if (config('http.code.success') === success) {
-            message.success('修改成功')
+            message.success(t('component.message.success.save'))
             setTimeout(() => {
                 router.back()
             }, 1500)

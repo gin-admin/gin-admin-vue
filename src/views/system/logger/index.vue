@@ -9,7 +9,7 @@
                     <a-col v-bind="colSpan">
                         <a-form-item
                             name="level"
-                            label="日志级别">
+                            :label="$t('pages.system.logger.form.level')">
                             <a-select v-model:value="searchFormData.level">
                                 <a-select-option value="info">INFO</a-select-option>
                                 <a-select-option value="warn">WARN</a-select-option>
@@ -20,50 +20,48 @@
                     <a-col v-bind="colSpan">
                         <a-form-item
                             name="trace_id"
-                            label="访问ID">
-                            <a-input
-                                v-model:value="searchFormData.trace_id"
-                                placeholder="请输入"></a-input>
+                            :label="$t('pages.system.logger.form.trace_id')">
+                            <a-input v-model:value="searchFormData.trace_id"></a-input>
                         </a-form-item>
                     </a-col>
 
-                    <a-col v-bind="colSpan">
-                        <a-form-item
-                            name="user_id"
-                            label="用户名称">
-                            <a-input
-                                v-model:value="searchFormData.user_id"
-                                placeholder="请输入"></a-input>
-                        </a-form-item>
-                    </a-col>
-                    <a-col v-bind="colSpan">
-                        <a-form-item
-                            name="tag"
-                            label="标签">
-                            <a-select v-model:value="searchFormData.tag">
-                                <a-select-option value="main">main</a-select-option>
-                                <a-select-option value="request">request</a-select-option>
-                            </a-select>
-                        </a-form-item>
-                    </a-col>
-                    <a-col>
-                        <a-form-item label="日志时间">
-                            <a-range-picker
-                                allow-clear
-                                show-time
-                                @change="checkDate"
-                                v-model:value="rangeDate"
-                                placeholder=""></a-range-picker>
-                        </a-form-item>
-                    </a-col>
+                    <!--                    <a-col v-bind="colSpan">-->
+                    <!--                        <a-form-item-->
+                    <!--                            name="user_id"-->
+                    <!--                            label="用户名称">-->
+                    <!--                            <a-input-->
+                    <!--                                v-model:value="searchFormData.user_id"-->
+                    <!--                                placeholder="请输入"></a-input>-->
+                    <!--                        </a-form-item>-->
+                    <!--                    </a-col>-->
+                    <!--                    <a-col v-bind="colSpan">-->
+                    <!--                        <a-form-item-->
+                    <!--                            name="tag"-->
+                    <!--                            label="标签">-->
+                    <!--                            <a-select v-model:value="searchFormData.tag">-->
+                    <!--                                <a-select-option value="main">main</a-select-option>-->
+                    <!--                                <a-select-option value="request">request</a-select-option>-->
+                    <!--                            </a-select>-->
+                    <!--                        </a-form-item>-->
+                    <!--                    </a-col>-->
+                    <!--                    <a-col>-->
+                    <!--                        <a-form-item label="日志时间">-->
+                    <!--                            <a-range-picker-->
+                    <!--                                allow-clear-->
+                    <!--                                show-time-->
+                    <!--                                @change="checkDate"-->
+                    <!--                                v-model:value="rangeDate"-->
+                    <!--                                placeholder=""></a-range-picker>-->
+                    <!--                        </a-form-item>-->
+                    <!--                    </a-col>-->
                     <a-col class="align-right">
                         <a-space>
-                            <a-button @click="handleResetForm">重置</a-button>
+                            <a-button @click="handleResetForm">{{ $t('button.reset') }}</a-button>
                             <a-button
                                 ghost
                                 type="primary"
                                 @click="handleSearch">
-                                搜索
+                                {{ $t('button.search') }}
                             </a-button>
                         </a-space>
                     </a-col>
@@ -75,7 +73,7 @@
         <x-action-bar class="mb-8-2">
             <template #extra>
                 <a-space>
-                    <a-tooltip title="刷新">
+                    <a-tooltip :title="$t('app.pwa.serviceworker.updated.ok')">
                         <a-button
                             type="text"
                             @click="handleSearch">
@@ -127,6 +125,9 @@ import apis from '@/apis'
 import { config } from '@/config'
 import { usePagination } from '@/hooks'
 import { formatUtcDateTime } from '@/utils/util'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n() // 解构出t方法
+
 defineOptions({
     name: 'Logger',
 })
@@ -136,12 +137,12 @@ const colors = ref({
     error: 'error',
 })
 const columns = [
-    { title: '日志级别', dataIndex: 'level', key: 'levels' },
-    { title: '访问ID', dataIndex: 'trace_id' },
-    { title: '访问名称', dataIndex: 'user_id' },
-    { title: '标签', dataIndex: 'tag', key: 'tags' },
-    { title: '日志内容', dataIndex: 'message' },
-    { title: '创建时间', dataIndex: 'created_at', key: 'createAt', width: 180 },
+    { title: t('pages.system.logger.form.level'), dataIndex: 'level', key: 'levels' },
+    { title: t('pages.system.logger.form.trace_id'), dataIndex: 'trace_id' },
+    { title: t('pages.system.logger.form.user_name'), dataIndex: 'user_id' },
+    { title: t('pages.system.logger.form.tag'), dataIndex: 'tag', key: 'tags' },
+    { title: t('pages.system.logger.form.message'), dataIndex: 'message' },
+    { title: t('pages.system.logger.form.created_at'), dataIndex: 'created_at', key: 'createAt', width: 180 },
 ]
 const { listData, paginationState, loading, showLoading, hideLoading, resetPagination, searchFormData } =
     usePagination()
@@ -185,10 +186,10 @@ async function getPageList() {
 /**
  * 选择时间
  */
-function checkDate(date, rangeDate) {
-    startTime.value = rangeDate[0]
-    endTime.value = rangeDate[1]
-}
+// function checkDate(date, rangeDate) {
+//     startTime.value = rangeDate[0]
+//     endTime.value = rangeDate[1]
+// }
 
 /**
  * 搜索

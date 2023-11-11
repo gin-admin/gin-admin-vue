@@ -17,7 +17,7 @@
                 <a-row :gutter="12">
                     <a-col :span="12">
                         <a-form-item
-                            label="所属上级"
+                            :label="$t('pages.system.menu.form.parent_name')"
                             name="parent_id">
                             <a-tree-select
                                 v-model:value="formData.parent_id"
@@ -26,7 +26,7 @@
                     </a-col>
                     <a-col :span="12">
                         <a-form-item
-                            label="类型"
+                            :label="$t('pages.system.menu.form.type')"
                             name="type">
                             <a-radio-group
                                 v-model:value="formData.type"
@@ -35,14 +35,14 @@
                     </a-col>
                     <a-col :span="12">
                         <a-form-item
-                            label="名称"
+                            :label="$t('pages.system.menu.form.name')"
                             name="name">
                             <a-input v-model:value="formData.name"></a-input>
                         </a-form-item>
                     </a-col>
                     <a-col :span="12">
                         <a-form-item
-                            label="访问地址"
+                            :label="$t('pages.system.menu.resource.form.path')"
                             name="path">
                             <a-input v-model:value="formData.path"></a-input>
                         </a-form-item>
@@ -50,8 +50,8 @@
                     <a-col :span="12">
                         <a-form-item name="code">
                             <template #label>
-                                <span class="mr-4-1">编码</span>
-                                <a-tooltip title="系统唯一且与内置组件名一致，否则导致缓存失效">
+                                <span class="mr-4-1">{{ $t('pages.system.menu.form.code') }}</span>
+                                <a-tooltip :title="$t('pages.system.menu.form.code')">
                                     <question-circle-outlined class="color-secondary"></question-circle-outlined>
                                 </a-tooltip>
                             </template>
@@ -61,7 +61,7 @@
 
                     <a-col :span="12">
                         <a-form-item
-                            label="启用状态"
+                            :label="$t('pages.system.menu.form.status')"
                             name="status">
                             <a-radio-group
                                 v-model:value="formData.status"
@@ -71,7 +71,7 @@
                     <a-col :span="12">
                         <a-form-item
                             style="width: 200px"
-                            label="排序值"
+                            :label="$t('pages.system.menu.form.sequence')"
                             name="sequence">
                             <a-input
                                 :defaultValue="0"
@@ -81,7 +81,7 @@
                     </a-col>
                     <a-col :span="12">
                         <a-form-item
-                            label="描述"
+                            :label="$t('pages.system.menu.form.description')"
                             name="description">
                             <a-input v-model:value="formData.description"></a-input>
                         </a-form-item>
@@ -89,14 +89,14 @@
 
                     <a-col :span="24">
                         <a-form-item
-                            label="属性json"
+                            :label="$t('pages.system.menu.form.properties')"
                             name="properties">
                             <a-textarea v-model:value="formData.properties"></a-textarea>
                         </a-form-item>
                     </a-col>
                 </a-row>
             </a-card>
-            <a-card title="API管理">
+            <a-card :title="$t('pages.system.menu.resource.form.title')">
                 <a-table
                     :columns="columns"
                     :data-source="formData.resources"
@@ -104,7 +104,7 @@
                     row-key="id">
                     <template #bodyCell="{ column, record, index }">
                         <template v-if="column.key === 'types'">
-                            <a-form-item label="请求类型">
+                            <a-form-item :label="$('pages.system.menu.resource.form.method')">
                                 <a-input-group
                                     style="display: inline-block; vertical-align: middle"
                                     :compact="true">
@@ -128,7 +128,7 @@
                             </a-form-item>
                         </template>
                         <template v-if="column.key === 'action'">
-                            <x-action-button @click="handleDelete(index)">删除</x-action-button>
+                            <x-action-button @click="handleDelete(index)"> {{ $t('button.delete') }}</x-action-button>
                         </template>
                     </template>
                 </a-table>
@@ -141,7 +141,7 @@
                     <template #icon>
                         <plus-outlined></plus-outlined>
                     </template>
-                    添加数据
+                    {{ $t('button.add') }}
                 </a-button>
             </a-card>
             <template v-if="menuTypeEnum.is('menu', formData.type)"> </template>
@@ -158,23 +158,23 @@ import { useModal, useForm } from '@/hooks'
 import { menuTypeEnum, statusTypeEnum } from '@/enums/system'
 import { ref } from 'vue'
 import { config } from '@/config'
-
+import { useI18n } from 'vue-i18n'
 const emit = defineEmits(['ok'])
-
+const { t } = useI18n() // 解构出t方法
 const { modal, showModal, hideModal, showLoading, hideLoading } = useModal()
 const { formData, formRef, formRules, resetForm } = useForm()
 
 formRules.value = {
-    name: { required: true, message: '请输入名称' },
-    code: { required: true, message: '请输入编码' },
+    name: { required: true, message: t('pages.system.menu.form.name.placeholder') },
+    code: { required: true, message: t('pages.system.menu.form.code.placeholder') },
 }
 
 const columns = [
-    { title: '请求类型/路径', dataIndex: 'types', key: 'types' },
-    { title: '操作', dataIndex: 'action', key: 'action' },
+    { title: t('pages.system.menu.form.path'), dataIndex: 'types', key: 'types' },
+    { title: t('button.action'), dataIndex: 'action', key: 'action' },
 ]
 const reqType = ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'DELETE']
-const cancelText = ref('取消')
+const cancelText = ref(t('button.cancel'))
 
 /**
  * 新建
@@ -183,7 +183,7 @@ function handleCreate() {
     formData.value.resources = []
     showModal({
         type: 'create',
-        title: '新建菜单',
+        title: t('pages.system.menu.add'),
     })
 }
 
@@ -196,7 +196,7 @@ function handleCreateChild(record = {}) {
     formData.value.resources = []
     showModal({
         type: 'create',
-        title: '新建下级菜单',
+        title: t('pages.system.menu.button.addChild'),
     })
     formData.value.parent_id = record.id
 }
@@ -207,7 +207,7 @@ function handleCreateChild(record = {}) {
 async function handleEdit(record = {}) {
     showModal({
         type: 'edit',
-        title: '编辑菜单',
+        title: t('pages.system.menu.edit'),
     })
     const { data } = await apis.menu.getMenu(record.id).catch(() => {
         throw new Error()
@@ -253,7 +253,6 @@ function handleOk() {
                     emit('ok')
                 }
             } catch (error) {
-                console.log(error, '修改错误')
                 hideLoading()
             }
         })

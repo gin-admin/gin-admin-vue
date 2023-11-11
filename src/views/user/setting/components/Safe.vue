@@ -10,10 +10,11 @@
                 layout="vertical">
                 <a-form-item
                     name="old_password"
-                    label="旧密码">
+                    :label="$t('pages.user.profile.tab.security.form.old_password')">
                     <a-input-password
                         v-model:value="formData.old_password"
                         size="large"
+                        :placeholder="$t('pages.user.profile.tab.security.form.old_password.placeholder')"
                         type="password">
                         <template #prefix>
                             <lock-outlined></lock-outlined>
@@ -21,9 +22,10 @@
                     </a-input-password>
                 </a-form-item>
                 <a-form-item
-                    label="新密码"
+                    :label="$t('pages.user.profile.tab.security.form.password')"
                     name="new_password">
                     <a-input-password
+                        :placeholder="$t('pages.user.profile.tab.security.form.password.placeholder')"
                         v-model:value="formData.new_password"
                         size="large"
                         type="password">
@@ -34,8 +36,9 @@
                 </a-form-item>
                 <a-form-item
                     name="new_passwords"
-                    label="确认新密码">
+                    :label="$t('pages.user.profile.tab.security.form.confirm_password')">
                     <a-input-password
+                        :placeholder="$t('pages.user.profile.tab.security.form.confirm_password.placeholder')"
                         v-model:value="formData.new_passwords"
                         size="large"
                         type="password">
@@ -49,7 +52,7 @@
                     <a-button
                         @click="handleOk"
                         type="primary"
-                        >更新密码
+                        >{{ $t('app.settings.security.modify') }}
                     </a-button>
                 </a-form-item>
             </a-form>
@@ -67,7 +70,8 @@ import { config } from '@/config'
 import { useForm } from '@/hooks'
 import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
-
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 const router = useRouter()
 const { formRef, formData, formRules } = useForm()
 import { LockOutlined } from '@ant-design/icons-vue'
@@ -82,14 +86,14 @@ function handleOk() {
             new_password: values.new_password,
         }
         if (values.new_passwords !== params.new_password) {
-            return message.error('两次密码不一致')
+            return message.error(t('pages.user.profile.tab.security.form.confirm_password.validator'))
         }
 
         const { success } = await apis.user.updatePassword(params.old_password, params).catch((err) => {
             console.log(err)
         })
         if (config('http.code.success') === success) {
-            message.success('修改成功')
+            message.success(t('component.message.success.save'))
             setTimeout(() => {
                 router.back()
             }, 1500)

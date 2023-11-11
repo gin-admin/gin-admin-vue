@@ -9,14 +9,14 @@
                         class="display-flex align-items-center"
                         style="background-color: #f6ffec; padding: 10px; box-sizing: border-box; width: 100%">
                         <check-circle-filled class="mr-4-1 color-success" />
-                        更加简洁、高效、模块化的 Golang Admin 服务，已经发布。
+                        {{ $('pages.welcome.alertMessage') }}
                     </p>
                 </a-row>
             </a-card>
 
             <a-card
                 class="mt-8-2"
-                title="欢迎使用">
+                :title="$t('pages.welcome.link')">
                 <p>
                     gin-admin-cli new -d ~/go/src --name testapp --desc 'A test API service based on golang.' --pkg
                     'github.com/xxx/testapp
@@ -31,7 +31,7 @@
 
             <a-card
                 class="mt-8-2"
-                title="快速开始">
+                :title="$t('pages.welcome.quickStart')">
                 <p>
                     1, gin-admin-cli new -d ~/go/src --name testapp --desc 'A test API service based on golang.' --pkg
                     'github.com/xxx/testapp'
@@ -64,7 +64,7 @@
 
             <a-card
                 class="mt-8-2"
-                title="生成结构体">
+                :title="$t('pages.welcome.generate')">
                 <p>
                     gin-admin-cli gen -d . -m CMS -s Category --structs-comment 'Category management'
 
@@ -77,7 +77,7 @@
             </a-card>
             <a-card
                 class="mt-8-2"
-                title="删除结构体">
+                :title="$t('pages.welcome.remove')">
                 <p>
                     gin-admin-cli rm -d . -m CMS -s Category
                     <copy-outlined
@@ -102,10 +102,10 @@ const handleCopy = () => {
     const clipboard = new ClipboardJS('.copy-btn')
     clipboard.on('success', (e) => {
         e.clearSelection()
-        message.success('复制成功!')
+        message.success('copy success!')
     })
     clipboard.on('error', () => {
-        message.error('复制失败!')
+        message.error('copy error!')
     })
 }
 </script>

@@ -1,8 +1,8 @@
-import { isFunction, omit } from 'lodash-es'
-
+import { isFunction, omit, find } from 'lodash-es'
+import { toList } from '@/utils/util'
 import * as layouts from '@/layouts'
-import { menuIcon } from './config'
-
+import localRoutes from '@/router/routes'
+import i18n from '@/locales'
 /**
  * 针对 后台返回的路由做处理
  */
@@ -13,26 +13,19 @@ export function formatApiData(data, parent = {}) {
     data.forEach((item) => {
         if (item.type === 'button' && !(Object.keys(parent).length === 0)) {
             parent.actions.push(item.code)
-            parent.meta.permission = [
-                {
-                    permission: parent.code,
-                    actions: parent.actions,
-                },
-            ]
+            parent.meta.actions = parent.actions
             parent.component = parent.path + '/index.vue'
             parent.children = []
             if (item.children && item.children.length) {
-                formatApiData(item.children, parent)
-                return
+                return formatApiData(item.children, parent)
             }
         } else if (item.type === 'page') {
             objItem = {
                 meta: {
-                    title: item.name,
+                    title: i18n.global.t(item.code),
                     isMenu: true,
                     keepAlive: true,
                     permission: '*',
-                    icon: menuIcon[item.code] || '',
                 },
                 path: item.path,
                 name: item.code,
@@ -65,33 +58,40 @@ export function formatRoutes(routes = [], parent = {}) {
     const modules = import.meta.glob('../views/**/*.vue')
     return routes
         .map((item) => {
-            const { meta = {} } = item
-            const component = item?.component || 'exception/404'
-            const isLink = meta?.type === 'link'
-            const isIframe = meta?.type === 'iframe'
+            const localRoute = find(toList(localRoutes), { name: item.name })
+            if (!localRoute) return
+
+            const component = localRoute?.component || 'exception/404'
+            const isLink = localRoute?.meta?.type === 'link'
+            const isIframe = localRoute?.meta?.type === 'iframe'
             const route = {
                 // 如果路由设置的 path 是 / 开头或是外链，则默认使用 path，否则动态拼接路由地址
-                path: new RegExp('^\\/.*').test(item.path) || isLink ? item.path : `${parent?.path ?? ''}/${item.path}`,
+                path:
+                    new RegExp('^\\/.*').test(localRoute.path) || isLink
+                        ? localRoute.path
+                        : `${parent?.path ?? ''}/${localRoute.path}`,
                 // 路由名称，建议唯一
-                name: item.name || '',
+                name: localRoute.name || '',
                 // 路由对应的页面，动态加载
-                component: layouts[component] || modules[`../views${component}`],
+                component: layouts[component] || modules[`../views/${component}`],
                 // meta，页面标题, 图标, 权限等附加信息
                 meta: {
-                    target: meta?.target || '',
-                    layout: meta?.layout || parent?.meta?.layout || 'BasicLayout',
-                    actions: meta?.actions ?? ['*'],
-                    openKeys: isLink ? [] : [...(parent?.meta?.openKeys ?? []), meta?.active ?? item?.name],
+                    ...(localRoute?.meta || {}),
+                    target: localRoute?.meta?.target || '',
+                    layout: localRoute?.meta?.layout || parent?.meta?.layout || 'BasicLayout',
+                    openKeys: isLink
+                        ? []
+                        : [...(parent?.meta?.openKeys ?? []), localRoute?.meta?.active ?? localRoute?.name],
                     isLink,
                     isIframe,
-                    ...meta,
+                    actions: item?.meta?.actions ?? ['*'],
+                    title: item?.meta?.title || '未命名',
                 },
             }
-
             // 面包屑导航
             route.meta.breadcrumb = [...(parent?.meta?.breadcrumb ?? []), route]
             // 重定向
-            item.redirect && (route.redirect = item.redirect)
+            localRoute.redirect && (route.redirect = localRoute.redirect)
             // 是否有子菜单，并递归处理
             if (item.children && item.children.length > 0) {
                 route.children = formatRoutes(item.children, route)
@@ -99,30 +99,6 @@ export function formatRoutes(routes = [], parent = {}) {
             return route
         })
         .filter((item) => item)
-}
-
-/**
- * 将没有权限的路由过滤掉
- * @param routes
- * @param userPermission
- * @return {*}
- */
-export function filterRoutes(routes, userPermission = []) {
-    return routes.filter((item) => {
-        let permission = item?.meta?.permission ?? []
-        permission = typeof permission === 'string' ? permission.split(',') : permission
-        const index = userPermission.findIndex((o) => {
-            return permission[0].permission === o.permission
-        })
-        const hasAuth = index > -1 || permission.includes('*')
-        if (hasAuth) {
-            item.meta.actions = index > -1 ? userPermission[index]['actions'] : ['*']
-            if (item.children && item.children.length > 0) {
-                item.children = filterRoutes(item.children, userPermission)
-            }
-            return item
-        }
-    })
 }
 
 /**

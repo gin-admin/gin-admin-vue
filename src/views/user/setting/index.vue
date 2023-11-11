@@ -30,14 +30,15 @@ import { computed, markRaw, ref } from 'vue'
 
 import Basic from './components/Basic.vue'
 import Safe from './components/Safe.vue'
-
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 defineOptions({
     name: 'userSetting',
 })
 
 const menuList = ref([
-    { name: '基本设置', key: 'basic', component: markRaw(Basic) },
-    { name: '安全设置', key: 'safe', component: markRaw(Safe) },
+    { name: t('app.settings.menuMap.basic'), key: 'basic', component: markRaw(Basic) },
+    { name: t('app.settings.menuMap.security'), key: 'safe', component: markRaw(Safe) },
 ])
 const selectedKeys = ref(['basic'])
 const cpSelectedMenu = computed(() => find(menuList.value, { key: head(selectedKeys.value) }))

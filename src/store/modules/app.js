@@ -48,7 +48,6 @@ const useAppStore = defineStore('app', {
                     .catch(() => {})
             })
         },
-
         /**
          * 更新 config
          */

@@ -2,8 +2,8 @@ import { UserOutlined } from '@ant-design/icons-vue'
 
 export default [
     {
-        path: 'user',
-        name: 'user',
+        path: 'users',
+        name: 'users',
         component: 'RouteViewLayout',
         meta: {
             icon: UserOutlined,

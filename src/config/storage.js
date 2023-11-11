@@ -7,4 +7,5 @@ export default {
     userInfo: 'user_info',
     permission: 'permission',
     config: 'config',
+    lang: 'lang',
 }

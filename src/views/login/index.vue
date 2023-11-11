@@ -4,13 +4,14 @@
             <!-- 账号登录 -->
             <a-tab-pane
                 key="account"
-                tab="账号登录">
+                :tab="$t('pages.login.accountLogin.tab')">
                 <a-form
                     :model="formData"
                     :rules="formRules"
                     ref="formRef">
                     <a-form-item name="username">
                         <a-input
+                            :placeholder="$t('pages.login.username.placeholder')"
                             v-model:value="formData.username"
                             size="large">
                             <template #prefix>
@@ -23,6 +24,7 @@
                             v-model:value="formData.password"
                             size="large"
                             type="password"
+                            :placeholder="$t('pages.login.password.placeholder')"
                             @pressEnter="handleLogin">
                             <template #prefix>
                                 <lock-outlined></lock-outlined>
@@ -35,6 +37,7 @@
                                 v-model:value="formData.captcha_code"
                                 size="large"
                                 type="text"
+                                :placeholder="$t('pages.login.captcha.placeholder')"
                                 @pressEnter="handleLogin">
                                 <template #prefix>
                                     <safety-outlined />
@@ -55,7 +58,7 @@
                             block
                             :loading="loading"
                             @click="handleLogin"
-                            >登录
+                            >{{ $t('pages.login.submit') }}
                         </a-button>
                     </a-form-item>
                 </a-form>
@@ -75,10 +78,11 @@ import { useAppStore, useRouterStore, useUserStore } from '@/store'
 import { timeFix } from '@/utils/util'
 import apis from '@/apis'
 import { md5 } from 'js-md5'
+import { useI18n } from 'vue-i18n'
 defineOptions({
     name: 'login',
 })
-
+const { t } = useI18n() // 解构出t方法
 const { formData, formRef, formRules } = useForm()
 const appStore = useAppStore()
 const userStore = useUserStore()
@@ -92,9 +96,9 @@ const httpApi = import.meta.env.BASE_URL + `api/v1/captcha/image`
 const redirect = computed(() => decodeURIComponent(route.query?.redirect ?? ''))
 
 formRules.value = {
-    username: { required: true, message: '请输入用户名' },
-    password: { required: true, message: '请输入密码' },
-    captcha_code: { required: true, message: '请输入验证码' },
+    username: { required: true, message: t('pages.login.username.placeholder') },
+    password: { required: true, message: t('pages.login.password.placeholder') },
+    captcha_code: { required: true, message: t('pages.login.captcha.placeholder') },
 }
 
 onMounted(() => {
@@ -129,7 +133,6 @@ async function handleLogin() {
             })
             .catch(() => {
                 loading.value = false
-                // message.error('登录失败')
                 getCaptcha()
             })
         loading.value = false
@@ -175,8 +178,8 @@ function goIndex() {
         router.push(indexRoute)
     }
     notification.success({
-        message: '欢迎',
-        description: `${timeFix()}，欢迎回来`,
+        message: t('welcome'),
+        description: `${timeFix()}，${t('home')}`,
     })
 }
 </script>

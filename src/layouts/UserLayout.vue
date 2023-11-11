@@ -8,7 +8,7 @@
                 <img
                     alt=""
                     :src="assets('logos.png')" />
-                <h3>打造专属高性能后台服务</h3>
+                <h3>{{ $t('pages.layouts.userLayout.title') }}</h3>
                 <!--                <p>Vue3 + Ant Design Vue + vite </p>-->
             </div>
             <div class="aside-footer">
@@ -18,7 +18,7 @@
         <div class="user-layout-main">
             <div class="user-layout-content">
                 <div class="user-layout-top">
-                    <div class="user-layout-header">登录</div>
+                    <div class="user-layout-header">{{ $t('login') }}</div>
                     <!--                    <div class="user-layout-desc">欢迎使用{{ title }}</div>-->
                 </div>
                 <div class="user-layout-form">

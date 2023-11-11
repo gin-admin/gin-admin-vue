@@ -4,7 +4,7 @@ export default [
     {
         path: 'home',
         name: 'home',
-        component: '/home/index.vue',
+        component: 'home/index.vue',
         meta: {
             icon: SmileOutlined,
             title: '欢迎页',

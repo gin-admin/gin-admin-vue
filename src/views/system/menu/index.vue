@@ -8,10 +8,10 @@
                 <a-row :gutter="gutter">
                     <a-col v-bind="colSpan">
                         <a-form-item
-                            label="名称"
+                            :label="$t('pages.system.menu.form.name')"
                             name="name">
                             <a-input
-                                placeholder="请输入"
+                                :placeholder="$t('pages.system.menu.form.name.placeholder')"
                                 v-model:value="searchFormData.name"></a-input>
                         </a-form-item>
                     </a-col>
@@ -19,13 +19,13 @@
                     <a-col v-bind="colSpan">
                         <a-form-item name="code">
                             <template #label>
-                                编码
-                                <a-tooltip title="编码 key">
+                                {{ $t('pages.system.menu.form.code') }}
+                                <a-tooltip :title="$t('pages.system.menu.form.code')">
                                     <question-circle-outlined class="ml-4-1 color-placeholder" />
                                 </a-tooltip>
                             </template>
                             <a-input
-                                placeholder="请输入"
+                                :placeholder="$t('pages.system.menu.form.code.placeholder')"
                                 v-model:value="searchFormData.code"></a-input>
                         </a-form-item>
                     </a-col>
@@ -34,12 +34,12 @@
                         class="align-right"
                         v-bind="colSpan">
                         <a-space>
-                            <a-button @click="handleResetSearch">重置</a-button>
+                            <a-button @click="handleResetSearch">{{ $t('button.reset') }}</a-button>
                             <a-button
                                 ghost
                                 type="primary"
                                 @click="handleSearch">
-                                搜索
+                                {{ $t('button.search') }}
                             </a-button>
                         </a-space>
                     </a-col>
@@ -56,7 +56,7 @@
                 <template #icon>
                     <plus-outlined></plus-outlined>
                 </template>
-                添加
+                {{ $t('pages.system.menu.add') }}
             </a-button>
         </x-action-bar>
         <a-table
@@ -103,20 +103,20 @@
                 <template v-if="'action' === column.key">
                     <x-action-button @click="$refs.editDialogRef.handleEdit(record)">
                         <a-tooltip>
-                            <template #title>编辑</template>
+                            <template #title>{{ $t('pages.system.menu.edit') }}</template>
                             <edit-outlined />
                         </a-tooltip>
                     </x-action-button>
 
                     <x-action-button @click="$refs.editDialogRef.handleCreateChild(record)">
                         <a-tooltip>
-                            <template #title>添加下级</template>
+                            <template #title>{{ $t('pages.system.menu.button.addChild') }}</template>
                             <plus-circle-outlined />
                         </a-tooltip>
                     </x-action-button>
                     <x-action-button @click="handleDelete(record)">
                         <a-tooltip>
-                            <template #title>删除</template>
+                            <template #title>{{ $t('pages.system.delete') }}</template>
                             <delete-outlined style="color: #ff4d4f" />
                         </a-tooltip>
                     </x-action-button>
@@ -140,20 +140,21 @@ import { menuTypeEnum, statusTypeEnum } from '@/enums/system'
 import { usePagination, useForm } from '@/hooks'
 import { formatUtcDateTime } from '@/utils/util'
 import EditDialog from './components/EditDialog.vue'
-
+import { useI18n } from 'vue-i18n'
 defineOptions({
-    name: 'systemMenu',
+    // eslint-disable-next-line vue/no-reserved-component-names
+    name: 'menu',
 })
-
+const { t } = useI18n() // 解构出t方法
 const columns = ref([
-    { title: '名称', dataIndex: 'name', key: 'name', fixed: true },
-    { title: '编码', dataIndex: 'code', key: 'code' },
+    { title: t('pages.system.menu.form.name'), dataIndex: 'name', key: 'name', fixed: true },
+    { title: t('pages.system.menu.form.code'), dataIndex: 'code', key: 'code' },
 
-    { title: '类型', dataIndex: 'type', key: 'menuType', width: 80 },
-    { title: '状态', dataIndex: 'status', key: 'statusType', width: 80 },
-    { title: '排序', dataIndex: 'sequence', width: 80 },
-    { title: '创建时间', dataIndex: 'created_at', key: 'createAt', width: 180 },
-    { title: '操作', key: 'action', width: 180 },
+    { title: t('pages.system.menu.form.type'), dataIndex: 'type', key: 'menuType', width: 80 },
+    { title: t('pages.system.menu.form.status'), dataIndex: 'status', key: 'statusType', width: 80 },
+    { title: t('pages.system.menu.form.sequence'), dataIndex: 'sequence', width: 80 },
+    { title: t('pages.system.menu.form.created_at'), dataIndex: 'created_at', key: 'createAt', width: 180 },
+    { title: t('pages.system.role.form.action'), key: 'action', width: 180 },
 ])
 const { listData, loading, showLoading, hideLoading, searchFormData, paginationState, resetPagination } =
     usePagination()
@@ -208,9 +209,9 @@ function handleResetSearch() {
  */
 function handleDelete({ id }) {
     Modal.confirm({
-        title: '删除提示',
-        content: '确认删除？',
-        okText: '确认',
+        title: t('pages.system.menu.delTip'),
+        content: t('button.confirm'),
+        okText: t('button.confirm'),
         onOk: () => {
             return new Promise((resolve, reject) => {
                 ;(async () => {
@@ -220,7 +221,7 @@ function handleDelete({ id }) {
                         })
                         if (config('http.code.success') === success) {
                             resolve()
-                            message.success('删除成功')
+                            message.success(t('component.message.success.delete'))
                             await getMenuList()
                         }
                     } catch (error) {
@@ -235,7 +236,7 @@ function handleDelete({ id }) {
  * 编辑完成
  */
 async function onOk() {
-    message.success('操作成功')
+    message.success(t('component.message.success.delete'))
     await getMenuList()
 }
 </script>

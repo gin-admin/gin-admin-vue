@@ -21,6 +21,22 @@
                 <action-button @click="handleConfig">
                     <setting-outlined></setting-outlined>
                 </action-button>
+                <a-dropdown :trigger="['hover']">
+                    <action-button :style="{ height: '44px' }">
+                        <translation-outlined />
+                    </action-button>
+                    <a-spin />
+                    <template #overlay>
+                        <a-menu>
+                            <a-menu-item
+                                v-for="(item, key) in langData"
+                                :key="key"
+                                @click="handleLang(key)">
+                                {{ item.icon }} {{ item.label }}
+                            </a-menu-item>
+                        </a-menu>
+                    </template>
+                </a-dropdown>
 
                 <a-dropdown :trigger="['click']">
                     <action-button :style="{ height: '44px' }">
@@ -38,13 +54,13 @@
                                 key="edit"
                                 @click="handleOpen">
                                 <edit-outlined />
-                                修改资料
+                                {{ $t('component.RightContent.profile') }}
                             </a-menu-item>
                             <a-menu-item
                                 key="logout"
                                 @click="handleLogout">
                                 <login-outlined></login-outlined>
-                                退出登录
+                                {{ $t('component.RightContent.logout') }}
                             </a-menu-item>
                         </a-menu>
                     </template>
@@ -57,13 +73,19 @@
 <script setup>
 import { Modal } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
-import { computed, useSlots } from 'vue'
+import { computed, useSlots, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { LoginOutlined, SettingOutlined, EditOutlined } from '@ant-design/icons-vue'
+import { LoginOutlined, SettingOutlined, EditOutlined, TranslationOutlined } from '@ant-design/icons-vue'
 import { useAppStore, useUserStore } from '@/store'
 import ActionButton from './ActionButton.vue'
 import { theme as antTheme } from 'ant-design-vue'
+import { config as conf } from '@/config'
+import { useI18n } from 'vue-i18n'
+import storage from '@/utils/storage'
+// import { useMultiTab } from '@/hooks'
 
+const { locale, t } = useI18n()
+// const { reload } = useMultiTab()
 defineOptions({
     name: 'BasicHeader',
 })
@@ -82,8 +104,8 @@ const slots = useSlots(['default', 'left', 'right'])
 
 const userStore = useUserStore()
 const appStore = useAppStore()
-const router = useRouter()
 
+const router = useRouter()
 const { config } = storeToRefs(appStore)
 const { userInfo } = storeToRefs(userStore)
 const { token } = antTheme.useToken()
@@ -105,14 +127,29 @@ const cpStyles = computed(() => {
 const cpShowLeftSlot = computed(() => !!slots.left)
 const cpShowDefaultSlot = computed(() => !!slots.default)
 
+const langData = ref({
+    'zh-ch': {
+        lang: 'zh-ch',
+        label: '简体中文',
+        icon: '🇨🇳',
+        title: '语言',
+    },
+    'en-us': {
+        lang: 'en-us',
+        label: 'English',
+        icon: '🇺🇸',
+        title: 'Language',
+    },
+})
+
 /**
  * 退出登录
  */
 function handleLogout() {
     Modal.confirm({
-        title: '注销登录？',
-        okText: '确认',
-        cancelText: '取消',
+        title: t('component.RightContent.logout'),
+        okText: t('button.confirm'),
+        cancelText: t('button.cancel'),
         onOk: () => {
             userStore.logout().then(() => {
                 router.push({
@@ -126,17 +163,24 @@ function handleLogout() {
 /**
  * 修改资料
  */
-// function handleEditInfo() {
-//     router.push({
-//         name: 'userSetting',
-//     })
-// }
+
 function handleOpen() {
     router.push({
         name: 'users',
     })
 }
 
+/**
+ * 切换语言
+ */
+
+function handleLang(lang) {
+    storage.local.setItem(conf('storage.lang'), lang)
+    locale.value = lang
+    location.reload()
+
+    // reload()
+}
 /**
  * 配置
  */
