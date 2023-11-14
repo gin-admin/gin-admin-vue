@@ -6,6 +6,7 @@
         :confirm-loading="modal.confirmLoading"
         :after-close="onAfterClose"
         :cancel-text="cancelText"
+        :ok-text="okText"
         @ok="handleOk"
         @cancel="handleCancel">
         <a-form
@@ -104,7 +105,7 @@
                     row-key="id">
                     <template #bodyCell="{ column, record, index }">
                         <template v-if="column.key === 'types'">
-                            <a-form-item :label="$('pages.system.menu.resource.form.method')">
+                            <a-form-item :label="$t('pages.system.menu.resource.form.method')">
                                 <a-input-group
                                     style="display: inline-block; vertical-align: middle"
                                     :compact="true">
@@ -175,6 +176,7 @@ const columns = [
 ]
 const reqType = ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'DELETE']
 const cancelText = ref(t('button.cancel'))
+const okText = ref(t('button.confirm'))
 
 /**
  * 新建
@@ -213,7 +215,7 @@ async function handleEdit(record = {}) {
         throw new Error()
     })
     formData.value = cloneDeep(data)
-    formData.value.properties = JSON.parse(formData.value.properties)
+    formData.value.properties = formData.value.properties ? JSON.parse(formData.value.properties) : ''
     formData.value.resources = formData.value.resources || (formData.value.resources = [])
 }
 

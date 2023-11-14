@@ -1,7 +1,7 @@
 export default {
     'button.add': '添加',
     'button.menu': '菜单',
-    'button.btn': '按钮',
+    'button.button': '按钮',
     'button.edit': '编辑',
     'button.delete': '删除',
     'button.search': '查询',

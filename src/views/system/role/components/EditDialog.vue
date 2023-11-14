@@ -6,6 +6,7 @@
         :confirm-loading="modal.confirmLoading"
         :after-close="onAfterClose"
         :cancel-text="cancelText"
+        :ok-text="okText"
         @ok="handleOk"
         @cancel="handleCancel">
         <a-form
@@ -95,7 +96,7 @@ const { modal, showModal, hideModal, showLoading, hideLoading } = useModal()
 const { formRecord, formData, formRef, formRules, resetForm } = useForm()
 const { t } = useI18n() // 解构出t方法
 const cancelText = ref(t('button.cancel'))
-
+const okText = ref(t('button.confirm'))
 formRules.value = {
     name: { required: true, message: t('pages.system.role.form.name.placeholder') },
     code: { required: true, message: t('pages.system.role.form.code.placeholder') },
