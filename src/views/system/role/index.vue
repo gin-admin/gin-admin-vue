@@ -135,7 +135,7 @@ const columns = [
     { title: t('pages.system.role.form.code'), dataIndex: 'code', width: 240 },
     { title: t('pages.system.role.form.name'), dataIndex: 'name' },
     { title: t('pages.system.role.form.status'), dataIndex: 'status', key: 'statusType', width: 80 },
-    { title: t('pages.system.role.form.sequence'), dataIndex: 'sequence', width: 80 },
+    { title: t('pages.system.role.form.sequence'), dataIndex: 'sequence', width: 100 },
     { title: t('pages.system.role.form.created_at'), key: 'createAt', fixed: 'right', width: 120 },
     { title: t('button.action'), key: 'action', fixed: 'right', width: 120 },
 ]

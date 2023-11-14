@@ -27,7 +27,7 @@
                     </action-button>
                     <a-spin />
                     <template #overlay>
-                        <a-menu>
+                        <a-menu v-model:selectedKeys="current">
                             <a-menu-item
                                 v-for="(item, key) in langData"
                                 :key="key"
@@ -82,10 +82,8 @@ import { theme as antTheme } from 'ant-design-vue'
 import { config as conf } from '@/config'
 import { useI18n } from 'vue-i18n'
 import storage from '@/utils/storage'
-// import { useMultiTab } from '@/hooks'
 
 const { locale, t } = useI18n()
-// const { reload } = useMultiTab()
 defineOptions({
     name: 'BasicHeader',
 })
@@ -126,7 +124,8 @@ const cpStyles = computed(() => {
 })
 const cpShowLeftSlot = computed(() => !!slots.left)
 const cpShowDefaultSlot = computed(() => !!slots.default)
-
+const defaultLang = storage.local.getItem(conf('storage.lang')) || 'zh-ch'
+const current = ref(defaultLang)
 const langData = ref({
     'zh-ch': {
         lang: 'zh-ch',
@@ -166,7 +165,7 @@ function handleLogout() {
 
 function handleOpen() {
     router.push({
-        name: 'users',
+        name: 'setting',
     })
 }
 
@@ -177,9 +176,8 @@ function handleOpen() {
 function handleLang(lang) {
     storage.local.setItem(conf('storage.lang'), lang)
     locale.value = lang
+    current.value = lang
     location.reload()
-
-    // reload()
 }
 /**
  * 配置

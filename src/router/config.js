@@ -1,20 +1,9 @@
 import * as layouts from '@/layouts'
-import { SmileOutlined, SettingOutlined, TableOutlined, FormOutlined } from '@ant-design/icons-vue'
 /**
  * 白名单
  * @type {string[]}
  */
 export const whiteList = ['login', 'logout', '404', 'users']
-
-/**
- * 菜单icon
- */
-export const menuIcon = {
-    home: SmileOutlined,
-    system: SettingOutlined,
-    list: TableOutlined,
-    form: FormOutlined,
-}
 
 /**
  * 未找到页面路由
@@ -57,20 +46,5 @@ export const constantRoutes = [
     {
         path: '/404',
         component: () => import('@/views/exception/404.vue'),
-    },
-    {
-        name: 'users',
-        redirect: '/setting',
-        component: layouts.BasicLayout,
-        meta: {
-            title: '个人设置',
-        },
-        children: [
-            {
-                path: '/setting',
-                name: 'userSetting',
-                component: () => import('@/views/user/setting/index.vue'),
-            },
-        ],
     },
 ]

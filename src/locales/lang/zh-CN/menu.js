@@ -4,6 +4,7 @@ export default {
     system: '系统设置',
     menu: '菜单管理',
     user: '用户管理',
+    setting: '信息设置',
     role: '角色管理',
     logger: '日志管理',
     'menu.account.settings': '个人设置',

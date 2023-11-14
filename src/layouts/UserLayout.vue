@@ -9,7 +9,7 @@
                     alt=""
                     :src="assets('logos.png')" />
                 <h3>{{ $t('pages.layouts.userLayout.title') }}</h3>
-                <!--                <p>Vue3 + Ant Design Vue + vite </p>-->
+                <!--                <p>Vue3 + Ant Design Vue + vite</p>-->
             </div>
             <div class="aside-footer">
                 <p>© {{ title }} {{ version }}</p>
@@ -26,19 +26,74 @@
                 </div>
             </div>
         </div>
+
+        <div
+            class="basic-header__right"
+            style="padding: 30px">
+            <a-space :size="16">
+                <a-dropdown :trigger="['hover']">
+                    <action-button :style="{ height: '44px' }">
+                        <translation-outlined />
+                    </action-button>
+                    <a-spin />
+                    <template #overlay>
+                        <a-menu v-model:selectedKeys="current">
+                            <a-menu-item
+                                v-for="(item, key) in langData"
+                                :key="key"
+                                @click="handleLang(key)">
+                                {{ item.icon }} {{ item.label }}
+                            </a-menu-item>
+                        </a-menu>
+                    </template>
+                </a-dropdown>
+            </a-space>
+        </div>
     </div>
 </template>
 
 <script setup>
 import { assets } from '@/utils/util'
-import { config } from '@/config'
+import { config as conf, config } from '@/config'
+import { ref } from 'vue'
+import { TranslationOutlined } from '@ant-design/icons-vue'
 
+import storage from '@/utils/storage'
+import { useI18n } from 'vue-i18n'
+const { locale } = useI18n()
 defineOptions({
     name: 'UserLayout',
 })
 
 const { version } = __APP_INFO__
 const title = config('app.title')
+const defaultLang = storage.local.getItem(conf('storage.lang')) || 'zh-ch'
+const current = ref(defaultLang)
+const langData = ref({
+    'zh-ch': {
+        lang: 'zh-ch',
+        label: '简体中文',
+        icon: '🇨🇳',
+        title: '语言',
+    },
+    'en-us': {
+        lang: 'en-us',
+        label: 'English',
+        icon: '🇺🇸',
+        title: 'Language',
+    },
+})
+
+/**
+ * 切换语言
+ */
+
+function handleLang(lang) {
+    storage.local.setItem(conf('storage.lang'), lang)
+    locale.value = lang
+    current.value = lang
+    location.reload()
+}
 </script>
 
 <style lang="less" scoped>

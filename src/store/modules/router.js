@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 
 import router from '@/router'
 import { notFoundRoute } from '@/router/config'
-import { formatRoutes, generateMenuList, generateRoutes, getFirstValidRoute } from '@/router/util'
+import { addWebPage, formatRoutes, generateMenuList, generateRoutes, getFirstValidRoute } from '@/router/util'
 import { findTree } from '@/utils/util'
 import { config } from '@/config'
 import apis from '@/apis'
@@ -29,6 +29,9 @@ const useRouterStore = defineStore('router', {
                         })
                         if (config('http.code.success') === success) {
                             const list = formatApiData(data)
+
+                            list.push(...addWebPage())
+                            console.log(list, 'pppppp')
                             const validRoutes = formatRoutes(list)
 
                             const menuList = generateMenuList(validRoutes)
@@ -37,6 +40,8 @@ const useRouterStore = defineStore('router', {
                             routes.forEach((route) => {
                                 router.addRoute(route)
                             })
+                            console.log(menuList, 'menulist')
+                            console.log(routes, 'routes')
                             this.routes = routes
                             this.menuList = menuList
                             this.indexRoute = indexRoute

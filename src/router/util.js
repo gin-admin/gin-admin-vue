@@ -3,6 +3,25 @@ import { toList } from '@/utils/util'
 import * as layouts from '@/layouts'
 import localRoutes from '@/router/routes'
 import i18n from '@/locales'
+import notMenuPage from '@/router/notMenuPage'
+
+/**
+ * 处理本地 不再后台返回数据的页面
+ */
+export function addWebPage() {
+    const data = []
+    notMenuPage.forEach((item) => {
+        data.push({
+            code: item,
+            name: item,
+            meta: {
+                title: i18n.global.t(item) || item,
+            },
+        })
+    })
+    return data
+}
+
 /**
  * 针对 后台返回的路由做处理
  */
@@ -14,7 +33,6 @@ export function formatApiData(data, parent = {}) {
         if (item.type === 'button' && !(Object.keys(parent).length === 0)) {
             parent.actions.push(item.code)
             parent.meta.actions = parent.actions
-            parent.component = parent.path + '/index.vue'
             parent.children = []
             if (item.children && item.children.length) {
                 return formatApiData(item.children, parent)
@@ -22,24 +40,21 @@ export function formatApiData(data, parent = {}) {
         } else if (item.type === 'page') {
             objItem = {
                 meta: {
-                    title: i18n.global.t(item.code),
+                    title: i18n.global.t(item.code) || item.code,
                     isMenu: true,
                     keepAlive: true,
                     permission: '*',
                 },
-                path: item.path,
                 name: item.code,
                 type: item.type,
                 code: item.code,
                 actions: [],
                 children: [],
-                component: item.path + '/index.vue',
             }
             newData.push(objItem)
             if (item.children && item.children.length) {
                 objItem.component = 'RouteViewLayout'
                 const temp = formatApiData(item.children, objItem)
-
                 objItem.children.push(...(temp || []))
             }
         }
@@ -60,7 +75,6 @@ export function formatRoutes(routes = [], parent = {}) {
         .map((item) => {
             const localRoute = find(toList(localRoutes), { name: item.name })
             if (!localRoute) return
-
             const component = localRoute?.component || 'exception/404'
             const isLink = localRoute?.meta?.type === 'link'
             const isIframe = localRoute?.meta?.type === 'iframe'

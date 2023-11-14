@@ -4,6 +4,7 @@ export default {
     system: 'System',
     menu: 'Menu',
     user: 'User',
+    setting: 'InfoSetting',
     role: 'Role',
     logger: 'Logger',
     'menu.account.settings': 'Account Settings',
