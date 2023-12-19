@@ -31,7 +31,7 @@ const useRouterStore = defineStore('router', {
                             const list = formatApiData(data)
 
                             list.push(...addWebPage())
-                            console.log(list, 'pppppp')
+
                             const validRoutes = formatRoutes(list)
 
                             const menuList = generateMenuList(validRoutes)
@@ -40,8 +40,6 @@ const useRouterStore = defineStore('router', {
                             routes.forEach((route) => {
                                 router.addRoute(route)
                             })
-                            console.log(menuList, 'menulist')
-                            console.log(routes, 'routes')
                             this.routes = routes
                             this.menuList = menuList
                             this.indexRoute = indexRoute

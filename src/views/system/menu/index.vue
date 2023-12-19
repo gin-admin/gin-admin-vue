@@ -180,6 +180,9 @@ async function getMenuList() {
             })
         hideLoading()
         if (config('http.code.success') === success) {
+            data.forEach((item) => {
+                item.name = t(item.code) || item.name
+            })
             listData.value = data
             paginationState.total = total
         }

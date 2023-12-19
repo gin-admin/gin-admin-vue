@@ -62,8 +62,8 @@
                             <a-radio-group
                                 v-model:value="formData.status"
                                 :options="[
-                                    { label: $t('pages.system.role.form.enabled'), value: 'enabled' },
-                                    { label: $t('pages.system.role.form.disabled'), value: 'disabled' },
+                                    { label: $t('pages.system.role.form.status.enabled'), value: 'enabled' },
+                                    { label: $t('pages.system.role.form.status.disabled'), value: 'disabled' },
                                 ]"></a-radio-group>
                         </a-form-item>
                     </a-col>
@@ -88,7 +88,6 @@ import { ref, watch } from 'vue'
 import { config } from '@/config'
 import apis from '@/apis'
 import { useForm, useModal } from '@/hooks'
-import { toMenuTree } from '@/utils/util'
 
 const emit = defineEmits(['ok'])
 import { useI18n } from 'vue-i18n'
@@ -113,19 +112,31 @@ async function getMenus() {
         throw new Error()
     })
 
-    treeData.value = formatData(data)
+    treeData.value = toMenuTrees(data)
 }
 
 getMenus()
-
-function formatData(data) {
-    return toMenuTree(data)
-}
 
 watch(checkedKeys, () => {
     console.log('checkedKeys', checkedKeys)
 })
 
+function toMenuTrees(data) {
+    const result = []
+    data.forEach((item) => {
+        let temp = {
+            title: t(item.code),
+            key: item.id,
+        }
+        if (item.children && item.children.length) {
+            let children = toMenuTrees(item.children)
+            temp['children'] = children || []
+        }
+
+        result.push(temp)
+    })
+    return result
+}
 /**
  * 新建
  */

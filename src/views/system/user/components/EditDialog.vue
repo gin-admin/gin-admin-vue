@@ -104,8 +104,8 @@
                             <a-radio-group
                                 v-model:value="formData.status"
                                 :options="[
-                                    { label: t('pages.system.user.form.status.activated'), value: 'activated' },
-                                    { label: t('pages.system.user.form.status.freezed'), value: 'freezed' },
+                                    { label: $t('pages.system.user.form.status.activated'), value: 'activated' },
+                                    { label: $t('pages.system.user.form.status.freezed'), value: 'freezed' },
                                 ]"></a-radio-group>
                         </a-form-item>
                     </a-col>

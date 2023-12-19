@@ -9,7 +9,7 @@
                         class="display-flex align-items-center"
                         style="background-color: #f6ffec; padding: 10px; box-sizing: border-box; width: 100%">
                         <check-circle-filled class="mr-4-1 color-success" />
-                        {{ $('pages.welcome.alertMessage') }}
+                        {{ $t('pages.welcome.alertMessage') }}
                     </p>
                 </a-row>
             </a-card>
